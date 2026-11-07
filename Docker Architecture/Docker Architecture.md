@@ -118,9 +118,9 @@ Understanding the components is helpful, but seeing how they interact during a t
 
 When you type a command like docker run nginx in your terminal, you're talking to the Docker client. This client:
 
-      * Takes your command
-      * Formats it properly
-      * Sends it to the Docker daemon (the engine that does the actual work)
+  * Takes your command
+  * Formats it properly
+  * Sends it to the Docker daemon (the engine that does the actual work)
 
 ![Alt text](images/Step_1.png)
 
