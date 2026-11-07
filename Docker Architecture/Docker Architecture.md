@@ -23,17 +23,17 @@ Docker containers offer a lightweight alternative by virtualizing at the operati
 
 The Docker platform revolves around **the Docker Engine, which manages the lifecycle of containers**. Its workflow involves:
 
-# 1. Docker Daemon:
+### 1. Docker Daemon:
 
 * A background process that **builds, runs, and manages Docker objects such as containers, images, networks, and volumes**.
 * Processes API requests and performs container-related tasks.
 
-## 2. Docker REST API:
+### 2. Docker REST API:
 
 * Enables communication between **applications and the Docker Daemon**.
 * Facilitates interactions through **HTTP clients**.
   
-## 3. Docker CLI:
+### 3. Docker CLI:
 
 * A command-line tool that allows users to interact with the Docker Daemon.
 * Simplifies the management of Docker containers and related objects.
