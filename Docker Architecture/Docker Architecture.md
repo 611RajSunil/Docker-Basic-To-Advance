@@ -112,22 +112,22 @@ The Docker host includes all the components needed to run containers, such as th
 
 Understanding the components is helpful, but seeing how they interact during a typical workflow makes the architecture click into place. Here's what generally happens when you run a container:
 
-### Step 1: 
+#### Step 1: 
   * Writing the Dockerfile You start by writing a Dockerfile, which lists the base image and a series of instructions—installing dependencies, copying application files, and setting the command that should run when the container starts.
 
-### Step 2:
+#### Step 2:
   * Building the Image Running docker build sends the Dockerfile to the Docker Daemon, which processes each instruction, creates a corresponding layer, and packages the result into a Docker image stored locally.
 
-### Step 3:
+#### Step 3:
   * Pushing to a Registry (Optional) If you want to share the image or deploy it elsewhere, you push it to a registry using docker push. The image becomes available for anyone with appropriate access to pull down.
 
-### Step 4: 
+#### Step 4: 
   * Pulling the Image On another machine — a teammate's laptop, a test server, or a production node — running docker pull retrieves the image from the registry.
 
-### Step 5: 
+#### Step 5: 
   * Running the Container The docker run command tells the daemon to create a container from the image. The daemon allocates a writable layer, sets up networking and storage according to the specified configuration, and starts the containerized process.
 
-### Step 6: 
+#### Step 6: 
   * Managing the Running Container Once running, containers can be monitored, stopped, restarted, or removed using additional Docker commands. Logs, resource usage, and container state can all be inspected through the client, which relays these requests to the daemon.
 
 **This client-daemon-registry cycle repeats constantly in real-world development and deployment pipelines, often automated through CI/CD systems rather than run manually.**
