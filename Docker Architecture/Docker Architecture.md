@@ -122,7 +122,7 @@ When you type a command like docker run nginx in your terminal, you're talking t
       * Formats it properly
       * Sends it to the Docker daemon (the engine that does the actual work)
 
-![Alt text](images/Step 1.png)
+![Alt text](images/Step_1.png)
 
 Think of it like ordering at a restaurant — you (the user) tell the waiter (Docker client) what you want, and they take your order to the kitchen (Docker daemon).
 
@@ -136,7 +136,7 @@ If it doesn’t find the image:
   * Downloads the image
   * Stores it locally for future use
 
-![Alt text](images/Step 2.png)
+![Alt text](images/Step_2.png)
 
 This is like the kitchen checking if they have all the ingredients. If not, they send someone to the store to get what’s needed.
 
@@ -148,7 +148,7 @@ The Docker daemon doesn’t actually create the container itself. Instead, it ha
   * Creates container specifications
   * Prepares everything for the Linux kernel
 
-![Alt text](images/Step 3.png)
+![Alt text](images/Step_3.png)
 
 #### Step 4: Kernel Creates Namespaces & Cgroups
 
@@ -157,7 +157,7 @@ Now the Linux kernel steps in and creates two important things:
  **Namespaces**: These provide isolation by making the container think it has its own copy of resources (network interfaces, process IDs, etc.)
  **Cgroups (Control Groups)**: These limit how many resources the container can use (CPU, memory, etc.)
 
-![Alt text](images/Step 4.png)
+![Alt text](images/Step_4.png)
 
 Namespaces are like giving the container its own private room, while cgroups are like setting rules for how much of the house’s electricity and water it can use.
 
@@ -170,7 +170,7 @@ Docker sets up networking so your container can communicate:
   * Assigns the container an IP address
   * Sets up DNS resolution so the container can find other services by name
 
-![Alt text](images/Step 5.png)
+![Alt text](images/Step_5.png)
 
 This is similar to setting up a new phone with its own phone number and contact list.
 
@@ -182,7 +182,7 @@ Docker images are made up of read-only layers, but containers need a place to wr
   * Adds a new writable layer on top where all changes will be stored
   * Uses a union filesystem to combine these layers so they appear as one filesystem
 
-![Alt text](images/Step 6.png)
+![Alt text](images/Step_6.png)
 
 Think of this like giving someone a reference book (read-only) and a notebook (writable) — they can read from the book but write their notes in the notebook.
 
@@ -190,13 +190,13 @@ Think of this like giving someone a reference book (read-only) and a notebook (w
 
 With everything set up, Docker now executes the container’s default command (usually defined in the image’s Dockerfile as CMD or ENTRYPOINT). This launches the main process that the container will run.
 
-![Alt text](images/Step 7.png)
+![Alt text](images/Step_7.png)
 
 #### Step 8: Output Streamed Back
 
 Finally, any output from the container (logs, error messages, etc.) is captured by Docker and streamed back to your terminal. This allows you to see what’s happening inside the container even though it’s running in isolation.
 
-![Alt text](images/Step 8.png)
+![Alt text](images/Step_8.png)
 
 **This is the power of Docker’s container creation flow — complex operations are abstracted away, letting you focus on your application rather than infrastructure details.**
 
