@@ -2,17 +2,15 @@
 
 Docker is a powerful containerization platform widely used in DevOps for streamlining the development, deployment, and management of applications. It enables developers to package applications and their dependencies into lightweight, portable containers, ensuring consistent performance across various environments. Though Docker isn’t a mandatory component of DevOps, it significantly improves efficiency, especially when paired with Kubernetes for managing and orchestrating containers. 
 
-![Alt text](images/Docker_Arch.png)
-
 # Traditional Virtualization vs. Docker
 
-## Virtual Machines (VMs)
+## ~*~ Virtual Machines (VMs) ~*~
 
-A virtual machine emulates physical hardware and runs an entire operating system (OS) along with applications. While VMs offer isolation and flexibility, they require considerable system resources, as each VM includes a full OS, making them resource-heavy and slower to start.
+* A virtual machine emulates physical hardware and runs an entire operating system (OS) along with applications. While VMs offer isolation and flexibility, they require considerable system resources, as each VM includes a full OS, making them resource-heavy and slower to start.
 
-## Docker Containers
+## ~*~ Docker Containers ~*~
 
-Docker containers offer a lightweight alternative by virtualizing at the operating system level. Instead of including an entire OS, containers share the host OS kernel, significantly reducing overhead. Each container packages an application along with its dependencies, ensuring it runs consistently regardless of the environment.
+* Docker containers offer a lightweight alternative by virtualizing at the operating system level. Instead of including an entire OS, containers share the host OS kernel, significantly reducing overhead. Each container packages an application along with its dependencies, ensuring it runs consistently regardless of the environment.
 
 ## Key Differences:
 
@@ -39,6 +37,8 @@ The Docker platform revolves around **the Docker Engine, which manages the lifec
 * Simplifies the management of Docker containers and related objects.
   
 The Docker client communicates with the Docker Daemon using the REST API, sending commands that the Daemon executes. This interaction can occur on the same system or remotely over a network.
+
+![Alt text](images/Docker_Work.png)
 
 ## Docker Architecture
 
@@ -108,26 +108,97 @@ The Docker host includes all the components needed to run containers, such as th
  #### 6.2 Networks 
    * virtual networks that let containers communicate with each other and with the outside world, supporting different drivers depending on whether containers need to talk to each other on the same host or across multiple hosts
 
+![Alt text](images/Docker_Arch.png)
+
 ## Docker Workflow: How It All Works Together
 
 Understanding the components is helpful, but seeing how they interact during a typical workflow makes the architecture click into place. Here's what generally happens when you run a container:
 
-#### Step 1: 
-  * Writing the Dockerfile You start by writing a Dockerfile, which lists the base image and a series of instructions—installing dependencies, copying application files, and setting the command that should run when the container starts.
+#### Step 1: Docker Client Sends Command
 
-#### Step 2:
-  * Building the Image Running docker build sends the Dockerfile to the Docker Daemon, which processes each instruction, creates a corresponding layer, and packages the result into a Docker image stored locally.
+When you type a command like docker run nginx in your terminal, you're talking to the Docker client. This client:
 
-#### Step 3:
-  * Pushing to a Registry (Optional) If you want to share the image or deploy it elsewhere, you push it to a registry using docker push. The image becomes available for anyone with appropriate access to pull down.
+      * Takes your command
+      * Formats it properly
+      * Sends it to the Docker daemon (the engine that does the actual work)
 
-#### Step 4: 
-  * Pulling the Image On another machine — a teammate's laptop, a test server, or a production node — running docker pull retrieves the image from the registry.
+![Alt text](images/Step 1.png)
 
-#### Step 5: 
-  * Running the Container The docker run command tells the daemon to create a container from the image. The daemon allocates a writable layer, sets up networking and storage according to the specified configuration, and starts the containerized process.
+Think of it like ordering at a restaurant — you (the user) tell the waiter (Docker client) what you want, and they take your order to the kitchen (Docker daemon).
 
-#### Step 6: 
-  * Managing the Running Container Once running, containers can be monitored, stopped, restarted, or removed using additional Docker commands. Logs, resource usage, and container state can all be inspected through the client, which relays these requests to the daemon.
+#### Step 2: Docker Daemon Checks Local Image
 
-**This client-daemon-registry cycle repeats constantly in real-world development and deployment pipelines, often automated through CI/CD systems rather than run manually.**
+Once the Docker daemon receives your request, it first checks if it already has the image (in our example, nginx) on your computer.
+
+If it doesn’t find the image:
+
+  * It connects to Docker Hub (or another registry you’ve configured)
+  * Downloads the image
+  * Stores it locally for future use
+
+![Alt text](images/Step 2.png)
+
+This is like the kitchen checking if they have all the ingredients. If not, they send someone to the store to get what’s needed.
+
+#### Step 3: Create Container with OCI Runtime
+
+The Docker daemon doesn’t actually create the container itself. Instead, it hands off this job to an OCI (Open Container Initiative) runtime, typically **runc**. This standardized container runtime:
+
+  * Takes the image
+  * Creates container specifications
+  * Prepares everything for the Linux kernel
+
+![Alt text](images/Step 3.png)
+
+#### Step 4: Kernel Creates Namespaces & Cgroups
+
+Now the Linux kernel steps in and creates two important things:
+
+ **Namespaces**: These provide isolation by making the container think it has its own copy of resources (network interfaces, process IDs, etc.)
+ **Cgroups (Control Groups)**: These limit how many resources the container can use (CPU, memory, etc.)
+
+![Alt text](images/Step 4.png)
+
+Namespaces are like giving the container its own private room, while cgroups are like setting rules for how much of the house’s electricity and water it can use.
+
+#### Step 5: Assign Virtual Network
+
+Docker sets up networking so your container can communicate:
+
+  * Creates a virtual network interface (veth pair)
+  * Connects one end to the container and one end to the Docker bridge
+  * Assigns the container an IP address
+  * Sets up DNS resolution so the container can find other services by name
+
+![Alt text](images/Step 5.png)
+
+This is similar to setting up a new phone with its own phone number and contact list.
+
+#### Step 6: Add Writable Layer
+
+Docker images are made up of read-only layers, but containers need a place to write data. Docker:
+
+  * Mounts all the read-only image layers
+  * Adds a new writable layer on top where all changes will be stored
+  * Uses a union filesystem to combine these layers so they appear as one filesystem
+
+![Alt text](images/Step 6.png)
+
+Think of this like giving someone a reference book (read-only) and a notebook (writable) — they can read from the book but write their notes in the notebook.
+
+#### Step 7: Execute Command
+
+With everything set up, Docker now executes the container’s default command (usually defined in the image’s Dockerfile as CMD or ENTRYPOINT). This launches the main process that the container will run.
+
+![Alt text](images/Step 7.png)
+
+#### Step 8: Output Streamed Back
+
+Finally, any output from the container (logs, error messages, etc.) is captured by Docker and streamed back to your terminal. This allows you to see what’s happening inside the container even though it’s running in isolation.
+
+![Alt text](images/Step 8.png)
+
+**This is the power of Docker’s container creation flow — complex operations are abstracted away, letting you focus on your application rather than infrastructure details.**
+
+## Easy way to remember:
+## *Client → Daemon → Image → Runtime → Kernel → Network → Filesystem → Execute → Output*
