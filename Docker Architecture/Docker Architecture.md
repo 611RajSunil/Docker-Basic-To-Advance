@@ -114,6 +114,8 @@ The Docker host includes all the components needed to run containers, such as th
 
 Understanding the components is helpful, but seeing how they interact during a typical workflow makes the architecture click into place. Here's what generally happens when you run a container:
 
+![Alt text](images/Docker_Cont_Creation_F.png)
+
 #### Step 1: Docker Client Sends Command
 
 When you type a command like docker run nginx in your terminal, you're talking to the Docker client. This client:
