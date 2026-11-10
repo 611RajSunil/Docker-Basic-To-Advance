@@ -50,11 +50,11 @@ The Following is the command which is used to build the docker image.
 
 **docker build -t your_image_name:tag -f path/to/Dockerfile**
 
-**docker build**: ~*~Initiates the build process.~*~
+**docker build**: *Initiates the build process.*
 
-**-t your_image_name:tag**  ~*~Gives the image you're creating a name and, if desired, a tag.~*~
+**-t your_image_name:tag**  *Gives the image you're creating a name and, if desired, a tag.*
 
-**path/to/Dockerfile** . : Gives the location of the Dockerfile. ~*~Give the right path if it's not in the current directory. "(.) DOT" represents the current workdir.~*~
+**path/to/Dockerfile** . : Gives the location of the Dockerfile. *Give the right path if it's not in the current directory. "(.) DOT" represents the current workdir.*
 
 ### 3. Docker Image Tag
 
@@ -78,3 +78,69 @@ The following are the some of the Docker Image Commands that are widely used:
 #### 1. List Docker Images
 
 ```docker images```
+
+#### Example
+
+```
+$ docker ls
+
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+nginx               latest              0d9c6c5575f5        4 days ago          126MB
+ubuntu              18.04               47b199b0cb85        2 weeks ago         64.2MB
+```
+
+#### Pull an Docker Image From a Registry
+
+``` docker image pull <image-name> ```
+
+#### Example
+
+```
+$ docker pull alpine:3.11
+
+3.11: Pulling from library/alpine
+Digest: sha256:9fanfkjn8q9893rhahf98uw893u8ansfkklasf90uuw30r930hjl
+Status: Downloaded newer image for alpine:3.11
+```
+
+### Docker Images Prune
+The Docker Image Prune will remove the unused Docker Images that are not associated with any containers. The Command looks as follows:
+
+```docker image prune```
+
+### Docker Images Filter
+When we want to filter some specific images we can filter out them using its labels or its meta information tags with the option **--filter**. The command looks as follows:
+
+```docker image ls -f "reference=mypython-app"```
+
+### Remove an Image from Docker
+The following command is used for removing the docker image from the local registry:
+
+```docker rmi <id-of-image>```
+
+#### Example
+
+```$ docker rmi <image_id>```
+
+```
+Untagged: <image_id>
+Deleted: sha256:<image_id>
+```
+
+#### Searching for a specific image on Docker Hub
+
+```docker search ubuntu```
+
+#### Example
+
+```$ docker search ubuntu```
+
+```
+NAME                                 DESCRIPTION                                     STARS OFFICIAL                AUTOMATED
+
+ubuntu                      Ubuntu is a Debian-based Linux operating s...                 4458                        [OK]               
+
+ubuntu-upstart              Upstart is an event-based replacement for ...                  62                         [OK]
+
+tutum/ubuntu                 Simple Ubuntu docker images with ssh access                   49                         [OK]               
+
